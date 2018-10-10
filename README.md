@@ -1,16 +1,16 @@
 # PyGoBGP
 
-PyGoBGP is a very basic python package to interact with GOBGP (currently briefly tested on only GoBGP v1.25)
+PyGoBGP is a simple python package to interact with GOBGP (currently briefly tested on only GoBGP v1.25)
 
 # Install
 
-PyGoBGP is not on CheeseShop so install from GitHub 
+PyGoBGP is not on CheeseShop yet so install from GitHub for the moment
 ```
 pip install git+https://github.com/oneryalcin/PyGoBGP.git
 ```
 
 ## Usage 
-PyGoBGP comes with protocol buffers generated `py` files for GoBGP v1.25 only. 
+PyGoBGP comes with protocol buffers generated `py` files `gobgp_pb2.py` abd `gobgp_pb2_grpc.py` for GoBGP v1.25 only. 
 
 Example Topology:
 
@@ -125,3 +125,27 @@ info {
 Upcoming
 
 
+# NOTES
+This library is not a production grade library yet and not tested properly. Under development and highly likely I will only develop the needed features. All contributions are welcomed.
+
+# Appendix A (Populating Python GoBGP gRPC files)
+
+ **Download GOBGP proto file**
+```
+wget https://raw.githubusercontent.com/osrg/gobgp/v1.25/api/gobgp.proto
+```
+**Install Python GRPC libs**
+```
+pip install grpcio grpcio-tools googleapis-common-protos
+```
+
+**Populate python GRPC API classes to interact with GOBGP**
+```
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. gobgp.proto
+```
+
+**Now we have the following files available**
+```
+    gobgp_pb2_grpc.py
+    gobgp_pb2.py
+```
