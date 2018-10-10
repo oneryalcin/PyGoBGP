@@ -1,0 +1,59 @@
+
+version: '2.1'
+
+services:
+  gobgp_control:
+   build:
+     context: ./
+     dockerfile: Dockerfile-control
+  #  image: python:3.7.0-slim-stretch
+   volumes:
+       - ../:/gobgprest
+   ports:
+       - "8080:8080"
+   networks:
+     test_net:
+        ipv4_address: 10.0.255.10
+     test3_net:
+        ipv4_address: 30.0.255.5
+  gobgp_1:
+    build:
+      context: ./
+      dockerfile: Dockerfile-gobgp
+    # image: ubuntu:16.04
+    command: "-f configs/gobgpd_1.conf"
+    networks:
+      test_net:
+        ipv4_address: 10.0.255.2
+      test2_net:
+        ipv4_address: 20.0.255.5
+  gobgp_2:
+    build:
+      context: ./
+      dockerfile: Dockerfile-gobgp
+    # image: ubuntu:16.04
+    command: "-f configs/gobgpd_2.conf"
+    networks:
+      test_net:
+        ipv4_address: 10.0.255.3
+
+networks:
+  test_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.255.0/24
+      #  gateway: 10.0.255.10
+  test2_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 20.0.255.0/24
+  test3_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 30.0.255.0/24

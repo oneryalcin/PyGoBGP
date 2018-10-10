@@ -1,0 +1,14 @@
+# Download GOBGP proto file
+wget https://raw.githubusercontent.com/osrg/gobgp/v1.25/api/gobgp.proto
+
+# Install Python GRPC libs 
+pip install grpcio grpcio-tools googleapis-common-protos
+
+# Populate python GRPC API classes to interact with GOBGP
+python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. gobgp.proto
+
+# Now we have the following files available
+    gobgp_pb2_grpc.py
+    gobgp_pb2.py
+ 
+
