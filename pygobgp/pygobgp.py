@@ -2,8 +2,8 @@ import grpc
 import itertools
 import socket
 import struct
-import gobgp_pb2 as gobgp
-import gobgp_pb2_grpc as gobgp_grpc
+import pygobgp.gobgp_pb2 as gobgp
+import pygobgp.gobgp_pb2_grpc as gobgp_grpc
 
 class PyGoBGP:
     """Rudimentary Read only GOBGP v1.25 Python API"""
