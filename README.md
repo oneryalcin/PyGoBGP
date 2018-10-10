@@ -24,13 +24,13 @@ Remote Peer AS: 65001
 
 Connect to GoBGP instance, default port is `50051` if not specified 
 
-```
+```python
 from gobgp import PyGoBGP
 gobgp = PyGoBGP(address="10.0.255.2")
 ```
 
 ### Get Neighbor Params
-```
+```python
 neigbor = gobgp.get_neigbor(address="10.0.255.3")
 print(neighbor)
 
@@ -53,7 +53,7 @@ info {
 ### Get Global BGP RIB-IN 
 
 Assume remote peer has following route and will advertise to GoBGP:
-```
+```python
 {
     'prefix': '50.30.16.0/20',
     'as_path': [5607, 1000],
@@ -64,7 +64,7 @@ Assume remote peer has following route and will advertise to GoBGP:
 
 ```
 
-```
+```python
 routes = gobgp.get_rib()
 print(routes)
 
@@ -78,7 +78,7 @@ Note that AS 65001 is prepended as it is an eBGP session.
 
 ### Remove Neighbor
 
-```
+```python
 gobgp.delete_neighbor(address="10.0.255.3")
 neigbor = gobgp.get_neigbor(address="10.0.255.3")
 print(neigbor)
@@ -91,7 +91,7 @@ None
 ### Add neighbor back
 
 First define neigbor params
-```
+```python
 neighbor = {
     "local_address": "10.0.255.2",
     "neighbor_address": "10.0.255.3",
@@ -101,7 +101,7 @@ neighbor = {
 gobgp.add_neighbor(**neighbor)
 ```
 
-```
+```python
 neigbor = gobgp.get_neigbor(address="10.0.255.3")
 print(neighbor)
 
