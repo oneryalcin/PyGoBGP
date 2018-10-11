@@ -1,12 +1,12 @@
 # PyGoBGP
 
-PyGoBGP is a simple python package to interact with GOBGP (currently briefly tested on only GoBGP v1.25)
+PyGoBGP is a simple python package to interact with GOBGP (currently briefly tested on only GoBGP v1.25). GoBGP uses gRPC as the API, however for many network engineers gRPC is a black magic. PyGoBGP handles the gRPC calls for you. However it only supports very basic calls for the moment. 
 
 # Install
 
-PyGoBGP is not on CheeseShop yet so install from GitHub for the moment
+Using pip it's a breeze to install it
 ```
-pip install git+https://github.com/oneryalcin/PyGoBGP.git
+pip install pygobgp
 ```
 
 ## Usage 
@@ -126,7 +126,7 @@ Upcoming
 
 
 # NOTES
-This library is not a production grade library yet and not tested properly. Under development and highly likely I will only develop the needed features. All contributions are welcomed.
+This library is not definitely a production grade library yet and not tested properly. Under development and highly likely I will only develop the needed features. Having said that all contributions are welcomed.
 
 # Appendix A (Populating Python GoBGP gRPC files)
 

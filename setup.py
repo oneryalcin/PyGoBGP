@@ -28,8 +28,8 @@ setup(
     license="Apache",
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Network Engineers',
-        'License :: OSI Approved :: Private',
+        'Intended Audience :: Telecommunications Industry',
+        'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
