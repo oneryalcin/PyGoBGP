@@ -4,15 +4,22 @@ PyGoBGP is a simple python package to interact with GOBGP (currently briefly tes
 
 # Install
 
-Using pip it's a breeze to install it
+Using pip it's a breeze
 ```
 pip install pygobgp
+```
+
+or get the latest version (may not stable)
+```
+pip install git+https://github.com/oneryalcin/PyGoBGP.git
 ```
 
 ## Usage 
 PyGoBGP comes with protocol buffers generated `py` files `gobgp_pb2.py` abd `gobgp_pb2_grpc.py` for GoBGP v1.25 only. 
 
 Example Topology:
+
+*Check [PyGoBGP-Example](https://github.com/oneryalcin/PyGoBGP-Example) repo for docker based setup for sandboxing* 
 
 ```
 GoBGP address: 10.0.255.2
