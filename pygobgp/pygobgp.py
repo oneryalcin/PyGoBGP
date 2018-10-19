@@ -110,7 +110,7 @@ class PyGoBGP:
         resp = self.stub.DeleteNeighbor(request)
         return resp
     
-    def add_neighbor(self, **kwargs):
+    def add_neighbor(self, neighbor=None, **kwargs):
         """
             Remove BGP neighbor 
         
@@ -135,12 +135,16 @@ class PyGoBGP:
         }
         
         """
-        # Build PeerConf object 
-        conf = gobgp.PeerConf(**kwargs)
         
-        #Build Peer object
-        peer = gobgp.Peer(families = [65537])
-        peer.conf.MergeFrom(conf)
+        if not neighbor:
+            # Build PeerConf object 
+            conf = gobgp.PeerConf(**kwargs)
+        
+            #Build Peer object
+            peer = gobgp.Peer(families = [65537])
+            peer.conf.MergeFrom(conf)
+        else:
+            peer = neighbor.peer
         
         #Build AddNeighborRequest object
         request = gobgp.AddNeighborRequest()
@@ -246,4 +250,109 @@ class PyGoBGP:
         return (int(string[0+i:length+i], 16) for i in range(0, 
                                                              len(string),
                                                              length))
+
+    
+class Neighbor:
+    def __init__(self, local_address, neighbor_address, local_as, peer_as, transport_address=None,
+                 ebgp_multihop=True, ebgp_multihop_ttl=255, router_id=None, auth_password=None,
+                 description=None, **kwargs):
+        """
+         BGP neighbor class (Only supports basic configuration of v4 neighbors currently )
+        
+        local_address: Local IPv4 address for BGP peering.
+        neighbor_adddress: Remote router IPv4 address for BGP peering.
+        local_as : Local autonomous system number
+        peer_as: Remote autonomous system number.
+        transport_address: IPv4 address for outgoing BGP messages. By default set to local_address
+        ebgp_multihop: True if enabled. Default True
+        ebgp_multihop_ttl: Unlike Cisco routers, by default it's set to 255, not 1.
+        router_id: By default set to local_address
+        auth_password: BGP MD5 password by default None
+        description: Neighbor description, freetext
+        apply_policy: Not yet defined, all accept both for out and in policies currently (TODO: Create Policy Class)
+        
+        """
+        self._families = [65537] # Only support for BGP IPv4 currently
+        self._local_address = local_address
+        self._neighbor_address = neighbor_address
+        self._local_as = local_as
+        self._peer_as = peer_as
+        self._transport_address = transport_address if transport_address else local_address
+        self._ebgp_multihop = ebgp_multihop
+        self._ebgp_multihop_ttl = ebgp_multihop_ttl
+        self._router_id = router_id if router_id else local_address
+        self._auth_password = auth_password
+        self._description = description
+        self.peer = self._create_peer() 
+        
+        
+        
+    def _create_peer(self, **kwargs):
+        """ 
+        Peer object is required for things like AddNeigborRequest, DeleteNeighborRequest, GetNeighborRequest
+        https://github.com/oneryalcin/PyGoBGP-Example/blob/372bf4c15fb0a86b5ca8886c8b7a07ec24127136/docker/control/proto_files/gobgp.proto#L119
+        """
+        
+        # Build PeerConf
+        peer_conf = self._create_peer_conf(**kwargs)
+        
+        # Build BGP Transport 
+        transport = self._create_transport(**kwargs)
+        
+        # Build EBGP Multihop
+        ebgp_multihop = self._create_ebgp_multihop(**kwargs)
+        
+        #Build Peer object
+        peer = gobgp.Peer(families=self._families)
+        peer.conf.MergeFrom(peer_conf)
+        peer.transport.MergeFrom(transport)
+        peer.ebgp_multihop.MergeFrom(ebgp_multihop)
+        
+        return peer
+        
+    
+    def _create_peer_conf(self, **kwargs):
+        """ 
+        Create gRPC object for PeerConf
+        https://github.com/oneryalcin/PyGoBGP-Example/blob/372bf4c15fb0a86b5ca8886c8b7a07ec24127136/docker/control/proto_files/gobgp.proto#L626
+        """
+        
+        params = {
+            "local_address": self._local_address,
+            "neighbor_address": self._neighbor_address,
+            "local_as": self._local_as,
+            "peer_as": self._peer_as,
+        }
+        
+        # Add optional Params
+        if self._auth_password:
+            params['auth_password'] = self._auth_password
+            
+        if self._description:
+            params['description'] = self._description
+        
+        return gobgp.PeerConf(**params)
+        
+    def _create_transport(self, **kwargs):
+        """ 
+        BGP Transport address, where BGP packets are sourced
+        https://github.com/oneryalcin/PyGoBGP-Example/blob/372bf4c15fb0a86b5ca8886c8b7a07ec24127136/docker/control/proto_files/gobgp.proto#L607
+        """
+        params = {
+            "local_address": self._local_address,
+        }
+        
+        return gobgp.Transport(**params)
+        
+    def _create_ebgp_multihop(self, **kwargs):
+        """ 
+        eBGP Multihop params 
+        https://github.com/oneryalcin/PyGoBGP-Example/blob/372bf4c15fb0a86b5ca8886c8b7a07ec24127136/docker/control/proto_files/gobgp.proto#L656
+        """
+        params = {
+            "enabled": self._ebgp_multihop,
+            "multihop_ttl": self._ebgp_multihop_ttl,
+        }
+        
+        return gobgp.EbgpMultihop(**params)
     
