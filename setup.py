@@ -16,7 +16,7 @@ requirements = [
 
 setup(
     name='pygobgp',
-    version="0.1.1",
+    version="0.1.2a",
     description="Python library to interact GoBGP",
     author="Mehmet Oner Yalcin",
     author_email='oneryalcin@gmail.com',
